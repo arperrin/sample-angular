@@ -20,7 +20,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'Nexus', passwordVariable: 'pass', usernameVariable: 'user')]) {
                     sh'''
                         ARTIFACT="${JOB_BASE_NAME}-${VERSION}-${BUILD_NUMBER}.tar.gz"
-                        REPOSITORY="http://192.168.33.10:8081/nexus/content/repositories/Angular"
+                        REPOSITORY="http://192.168.33.10:8081/nexus/content/sitesn/Angular"
                         cd dist
                         tar -cvf ${ARTIFACT} sample-angular/.
                         curl -v -u ${user}:${pass} --upload-file ${ARTIFACT} ${REPOSITORY}/${VERSION}/${ARTIFACT}
