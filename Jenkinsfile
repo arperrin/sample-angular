@@ -5,9 +5,17 @@ pipeline {
     }
     stages { 
         stage('Build') {
-            steps{
+            steps {
                 sh'''
                 npm install && ng build --prod
+                '''
+            }
+        }
+        stage('Archive') {
+            steps {
+                sh'''
+                ARCHIVE_NAME="${JOB_BASE_NAME}-${BUILD_NUMBER}.tar.gz"
+                tar -cvf ${ARCHIVE_NAME} ${TARGET}
                 '''
             }
         }
