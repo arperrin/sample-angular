@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh'''
                 ARCHIVE_NAME="${JOB_BASE_NAME}-${BUILD_NUMBER}.tar.gz"
-                TARGET=/dist/sample-angular/.
+                TARGET=dist/sample-angular/.
                 tar -cvf ${ARCHIVE_NAME} ${TARGET}
                 '''
             }
