@@ -11,14 +11,21 @@ pipeline {
                 '''
             }
         }
-        stage('Archive') {
+        stage('Publish To Nexus') {
             steps {
-                sh'''
-                ARCHIVE_NAME="${JOB_BASE_NAME}-${BUILD_NUMBER}.tar.gz"
-                TARGET=sample-angular/.
-                cd dist
-                tar -cvf ${ARCHIVE_NAME} ${TARGET}
-                '''
+                script {
+                    def json = readJSON file: 'package.json'
+                    env.VERSION = json.version                
+                }
+                withCredentials([usernamePassword(credentialsId: 'Nexus', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    sh'''
+                        ARTIFACT="${JOB_BASE_NAME}-${VERSION}-${BUILD_NUMBER}.tar.gz"
+                        REPOSITORY="http://192.168.33.10:8081/nexus/content/repositories/Angular"
+                        cd dist
+                        tar -cvf ${ARTIFACT} sample-angular/.
+                        curl -v -u ${user}:${pass} --upload-file ${ARTIFACT} ${REPOSITORY}/${VERSION}/${ARTIFACT}
+                    '''               
+                } 
             }
         }
     }
