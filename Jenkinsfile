@@ -15,17 +15,22 @@ pipeline {
             steps {
                 script {
                     def json = readJSON file: 'package.json'
-                    env.VERSION = json.version                
-                }
-                withCredentials([usernamePassword(credentialsId: 'Nexus', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    env.VERSION = json.version + "-${BUILD_NUMBER}"
+                    env.ARTIFACT="${JOB_BASE_NAME}-" + json.version + ".tar.gz" 
+
                     sh'''
-                        ARTIFACT="${JOB_BASE_NAME}-${VERSION}-${BUILD_NUMBER}.tar.gz"
-                        REPOSITORY="http://192.168.33.10:8081/nexus/content/sites/Angular"
                         cd dist
                         tar -cvf ${ARTIFACT} sample-angular/.
-                        curl -v -u ${user}:${pass} --upload-file ${ARTIFACT} ${REPOSITORY}/${VERSION}/${ARTIFACT}
                     '''               
-                } 
+
+                    nexusArtifactUploader artifacts: [[artifactId: 'sample-angular', classifier: '', file: "dist/${ARTIFACT}", type: 'tar.gz']], 
+                        credentialsId: 'ada569da-ce50-4f7a-b09f-eb643c48521b', 
+                        nexusUrl: '192.168.33.10:8081', 
+                        nexusVersion: 'nexus3', 
+                        protocol: 'http', 
+                        repository: 'angular', 
+                        version: "${VERSION}"
+                }               
             }
         }
     }
