@@ -4,6 +4,9 @@ pipeline {
         nodejs "NodeJS 12.3.1"
     }
     stages { 
+        stage('Checkout') {
+            git 'https://github.com/arperrin/sample-angular.git'
+        }
         stage('Build') {
             steps {
                 sh'''
@@ -28,7 +31,7 @@ pipeline {
                         nexusUrl: '192.168.33.10:8081', 
                         nexusVersion: 'nexus3', 
                         protocol: 'http', 
-                        repository: 'angular', 
+                        repository: 'perrin', 
                         version: "${VERSION}"
                 }               
             }
