@@ -5,7 +5,9 @@ pipeline {
     }
     stages { 
         stage('Checkout') {
-            git 'https://github.com/arperrin/sample-angular.git'
+            steps {
+                git 'https://github.com/arperrin/sample-angular.git'
+            }
         }
         stage('Build') {
             steps {
@@ -31,7 +33,7 @@ pipeline {
                         nexusUrl: '192.168.33.10:8081', 
                         nexusVersion: 'nexus3', 
                         protocol: 'http', 
-                        repository: 'perrin', 
+                        repository: 'perrin-raw', 
                         version: "${VERSION}"
                 }               
             }
